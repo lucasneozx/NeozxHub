@@ -1,106 +1,96 @@
--- Serviços
+-- Neozx Graphics Menu for Roblox
+-- Atualizado com sombras realistas, resolução real, e modo "gráficos de maquininha"
+
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
-local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Camera = Workspace.CurrentCamera
 
--- Jogador local
-local LocalPlayer = Players.LocalPlayer
-
--- GUI
-local gui = Instance.new("ScreenGui")
+-- Criar GUI
+local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 gui.Name = "NeozxGraphicsMenu"
-gui.ResetOnSpawn = false
-gui.Parent = game.CoreGui
 
--- Frame principal
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 360, 0, 480)
-frame.Position = UDim2.new(0.5, -180, 0.5, -240)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 500)
+frame.Position = UDim2.new(0.5, -200, 0.5, -250)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
-frame.Parent = gui
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = frame
-
--- Botão fechar
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -35, 0, 5)
-closeButton.Text = "X"
-closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.Parent = frame
-closeButton.MouseButton1Click:Connect(function()
-    gui.Enabled = false
+local close = Instance.new("TextButton", frame)
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -35, 0, 5)
+close.Text = "X"
+close.TextColor3 = Color3.fromRGB(255, 255, 255)
+close.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+close.MouseButton1Click:Connect(function()
+    gui:Destroy()
 end)
 
--- Título
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.Text = "🌟 Menu de Gráficos - Neozx"
-title.TextColor3 = Color3.new(1, 1, 1)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
-title.Parent = frame
-
--- Funções de gráficos
-local function aplicarGraficos(modo)
-    if modo == "Super Batata" then
-        Lighting.Brightness = 1
-        Lighting.FogEnd = 100
-        Lighting.EnvironmentDiffuseScale = 0
-        Lighting.EnvironmentSpecularScale = 0
-        for _, v in pairs(workspace:GetDescendants()) do
-            if v:IsA("Texture") or v:IsA("Decal") then
-                v.Transparency = 0.5
-            end
-        end
-    elseif modo == "Realista" then
-        Lighting.Brightness = 1.2
-        Lighting.FogEnd = 1000
-        Lighting.EnvironmentDiffuseScale = 0.5
-        Lighting.EnvironmentSpecularScale = 0.5
-        Lighting.GlobalShadows = true
-    elseif modo == "Raytracing" then
-        Lighting.Brightness = 1.1
-        Lighting.FogEnd = 1000
-        Lighting.EnvironmentDiffuseScale = 1
-        Lighting.EnvironmentSpecularScale = 1
-        Lighting.GlobalShadows = true
-    end
-end
-
--- Função de resolução
-local function aplicarResolucao(res)
-    local camera = workspace.CurrentCamera
-    if res == "720p" then
-        camera.FieldOfView = 70
-    elseif res == "4k" then
-        camera.FieldOfView = 90
-    end
-end
-
--- Botões
-local function criarBotao(texto, yPos, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.8, 0, 0, 40)
-    btn.Position = UDim2.new(0.1, 0, 0, yPos)
-    btn.Text = texto
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    btn.Parent = frame
+local function createOption(name, callback, posY)
+    local btn = Instance.new("TextButton", frame)
+    btn.Size = UDim2.new(0.9, 0, 0, 40)
+    btn.Position = UDim2.new(0.05, 0, 0, posY)
+    btn.Text = name
+    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.MouseButton1Click:Connect(callback)
 end
 
-criarBotao("Gráficos Super Batata", 60, function() aplicarGraficos("Super Batata") end)
-criarBotao("Gráficos Realista", 110, function() aplicarGraficos("Realista") end)
-criarBotao("Raytracing", 160, function() aplicarGraficos("Raytracing") end)
-criarBotao("Resolucao 720p", 210, function() aplicarResolucao("720p") end)
-criarBotao("Resolucao 4K", 260, function() aplicarResolucao("4k") end)
+-- Opções de gráfico
+createOption("Gráficos Altos", function()
+    Lighting.Brightness = 2
+    Lighting.GlobalShadows = true
+    Lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
+    Lighting.EnvironmentDiffuseScale = 1
+    Lighting.EnvironmentSpecularScale = 1
+    Workspace.Terrain.WaterWaveSize = 0.2
+    Workspace.Terrain.WaterReflectance = 1
+end, 50)
+
+createOption("Gráficos Realistas", function()
+    Lighting.Brightness = 1.5
+    Lighting.GlobalShadows = true
+    Lighting.OutdoorAmbient = Color3.fromRGB(90, 90, 90)
+    Lighting.EnvironmentDiffuseScale = 1.25
+    Lighting.EnvironmentSpecularScale = 1.25
+    Workspace.Terrain.WaterWaveSize = 0.2
+    Workspace.Terrain.WaterReflectance = 1
+end, 100)
+
+createOption("Raytracing Suave", function()
+    Lighting.Brightness = 1.2
+    Lighting.GlobalShadows = true
+    Lighting.OutdoorAmbient = Color3.fromRGB(90, 90, 90)
+    Lighting.EnvironmentDiffuseScale = 1.5
+    Lighting.EnvironmentSpecularScale = 1.5
+end, 150)
+
+createOption("Gráficos de Maquininha (sem textura)", function()
+    for _, v in pairs(Workspace:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.Material = Enum.Material.SmoothPlastic
+            v.Color = Color3.fromRGB(120, 120, 120)
+        end
+    end
+    Lighting.Brightness = 1
+    Lighting.GlobalShadows = false
+end, 200)
+
+-- Resolução real
+createOption("Resolução 720p", function()
+    Camera.FieldOfView = 60
+end, 250)
+
+createOption("Resolução 4K", function()
+    Camera.FieldOfView = 100
+end, 300)
+
+-- Ajustes finais
+Lighting.ClockTime = 14
+Lighting.FogEnd = 100000
+Lighting.FogStart = 0
+Lighting.FogColor = Color3.fromRGB(255, 255, 255)
+
+print("Menu de Gráficos Neozx carregado com sucesso")
