@@ -87,22 +87,21 @@ local function setGraphics(mode)
 	Lighting.GlobalShadows = true
 
 	if mode == "superRealista" then
-		Lighting.Brightness = 0.5
-		Lighting.FogEnd = 15000
-		Lighting.ClockTime = 16
-		Lighting.OutdoorAmbient = Color3.fromRGB(70, 70, 70)
-		Lighting.Ambient = Color3.fromRGB(60, 60, 60)
+		Lighting.Brightness = 1.5
+		Lighting.FogEnd = 400
+		Lighting.ClockTime = 17
+		Lighting.OutdoorAmbient = Color3.fromRGB(180, 180, 180)
+		Lighting.Ambient = Color3.fromRGB(160, 160, 160)
 		Lighting.ExposureCompensation = 0.3
-		Lighting.ShadowSoftness = 0.22
-	         
+		Lighting.ShadowSoftness = 0.25
 		aplicarShader()
 	elseif mode == "raytracing" then
-		Lighting.Brightness = 1.8
-		Lighting.FogEnd = 800
+		Lighting.Brightness = 1.6
+		Lighting.FogEnd = 400
 		Lighting.FogColor = Color3.fromRGB(180, 200, 255)
 		Lighting.ClockTime = 17
 		Lighting.GeographicLatitude = 41
-		Lighting.ExposureCompensation = 0.5
+		Lighting.ExposureCompensation = 0.3
 		Lighting.ShadowSoftness = 0.2
 		aplicarShader()
 	elseif mode == "alto" then
@@ -166,4 +165,3 @@ createButton("👁 Textura Batata", 250, "batataTextura")
 createButton("🪸 Super Batata", 300, "superBatata")
 createButton("🚫 Sem Sombras", 350, "semSombras")
 createButton("⚡ Raytracing", 400, "raytracing")
-
