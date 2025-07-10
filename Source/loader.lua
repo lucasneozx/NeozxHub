@@ -88,12 +88,12 @@ local function setGraphics(mode)
 
 	if mode == "superRealista" then
 		Lighting.Brightness = 0.7
-		Lighting.FogEnd = 15000
+		Lighting.FogEnd = 150000
 		Lighting.ClockTime = 17
 		Lighting.OutdoorAmbient = Color3.fromRGB(70, 70, 70)
 		Lighting.Ambient = Color3.fromRGB(60, 60, 60)
-		Lighting.ExposureCompensation = 0.4
-		Lighting.ShadowSoftness = 0.25
+		Lighting.ExposureCompensation = 0.3
+		Lighting.ShadowSoftness = 0.20
 		aplicarShader()
 	elseif mode == "raytracing" then
 		Lighting.Brightness = 1.8
