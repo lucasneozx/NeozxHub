@@ -88,7 +88,7 @@ local function setGraphics(mode)
 
 	if mode == "superRealista" then
 		Lighting.Brightness = 0.7
-		Lighting.FogEnd = 150000
+		Lighting.FogEnd = 1500
 		Lighting.ClockTime = 17
 		Lighting.OutdoorAmbient = Color3.fromRGB(70, 70, 70)
 		Lighting.Ambient = Color3.fromRGB(60, 60, 60)
