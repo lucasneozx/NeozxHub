@@ -1,18 +1,24 @@
--- Menu de Gráficos com Shader Realista - Neozx Edition
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+--[[
+    Script: Neozx Graphics Menu
+    Funções: Controle total de gráficos para Roblox incluindo
+    modos de desempenho, qualidade, shaders e resolução.
+]]
+
+-- Referências dos serviços
 local Lighting = game:GetService("Lighting")
+local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local Terrain = workspace:FindFirstChildOfClass("Terrain")
+local UserInputService = game:GetService("UserInputService")
 
 -- GUI
-local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+local gui = Instance.new("ScreenGui", Players.LocalPlayer:WaitForChild("PlayerGui"))
 gui.Name = "NeozxGraphicsMenu"
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 300, 0, 520)
+frame.Size = UDim2.new(0, 300, 0, 420)
 frame.Position = UDim2.new(0, 20, 0, 100)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
@@ -24,144 +30,95 @@ local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
 title.Text = "🌟 Menu de Gráficos - Neozx"
-title.TextColor3 = Color3.fromRGB(0, 255, 0)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 
--- FPS Counter
-local fpsLabel = Instance.new("TextLabel", frame)
-fpsLabel.Size = UDim2.new(1, -20, 0, 20)
-fpsLabel.Position = UDim2.new(0, 10, 1, -25)
-fpsLabel.BackgroundTransparency = 1
-fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-fpsLabel.Font = Enum.Font.Code
-fpsLabel.TextSize = 14
-fpsLabel.TextXAlignment = Enum.TextXAlignment.Right
-fpsLabel.Text = "FPS: ..."
-
-local frames = 0
-local last = tick()
-RunService.RenderStepped:Connect(function()
-	frames += 1
-	if tick() - last >= 1 then
-		fpsLabel.Text = "FPS: " .. frames
-		frames = 0
-		last = tick()
-	end
-end)
-
--- Shader Realista
-local function aplicarShader()
-	local bloom = Instance.new("BloomEffect", Lighting)
-	bloom.Intensity = 1.5
-	bloom.Threshold = 0.8
-	bloom.Size = 64
-
-	local cc = Instance.new("ColorCorrectionEffect", Lighting)
-	cc.Brightness = 0.1
-	cc.Contrast = 0.2
-	cc.Saturation = 0.3
-	cc.TintColor = Color3.fromRGB(255, 240, 230)
-
-	local rays = Instance.new("SunRaysEffect", Lighting)
-	rays.Intensity = 0.1
-	rays.Spread = 0.25
-
-	local dof = Instance.new("DepthOfFieldEffect", Lighting)
-	dof.FarIntensity = 0.1
-	dof.FocusDistance = 50
-	dof.InFocusRadius = 20
-	dof.NearIntensity = 0.3
+-- Funções de Gráficos
+local function aplicarGraficoBatata()
+    Lighting.Brightness = 1
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 500
+    Lighting.OutdoorAmbient = Color3.fromRGB(100, 100, 100)
+    Lighting.EnvironmentDiffuseScale = 0.2
+    Lighting.EnvironmentSpecularScale = 0.1
 end
 
--- Configura gráficos
-local function setGraphics(mode)
-	if Terrain then
-		Terrain.WaterWaveSize = 0.1
-		Terrain.WaterWaveSpeed = 10
-		Terrain.WaterReflectance = 0.5
-		Terrain.WaterTransparency = 0.5
-	end
-
-	Lighting:ClearAllChildren()
-	Lighting.GlobalShadows = true
-
-	if mode == "superRealista" then
-		Lighting.Brightness = 1.5
-		Lighting.FogEnd = 400
-		Lighting.ClockTime = 17
-		Lighting.OutdoorAmbient = Color3.fromRGB(180, 180, 180)
-		Lighting.Ambient = Color3.fromRGB(160, 160, 160)
-		Lighting.ExposureCompensation = 0.3
-		Lighting.ShadowSoftness = 0.25
-		aplicarShader()
-	elseif mode == "raytracing" then
-		Lighting.Brightness = 1.6
-		Lighting.FogEnd = 400
-		Lighting.FogColor = Color3.fromRGB(180, 200, 255)
-		Lighting.ClockTime = 17
-		Lighting.GeographicLatitude = 41
-		Lighting.ExposureCompensation = 0.3
-		Lighting.ShadowSoftness = 0.2
-		aplicarShader()
-	elseif mode == "alto" then
-		Lighting.Brightness = 2.2
-		Lighting.FogEnd = 5000
-	elseif mode == "medio" then
-		Lighting.Brightness = 1.5
-		Lighting.FogEnd = 15000
-	elseif mode == "batata" then
-		Lighting.GlobalShadows = false
-		Lighting.Brightness = 0.9
-		Lighting.FogEnd = 100000
-		Lighting.OutdoorAmbient = Color3.fromRGB(90, 90, 90)
-		Lighting.Ambient = Color3.fromRGB(85, 85, 85)
-	elseif mode == "batataTextura" then
-		Lighting.GlobalShadows = false
-		Lighting.Brightness = 1
-		Lighting.FogEnd = 100000
-		for _, obj in pairs(workspace:GetDescendants()) do
-			if obj:IsA("Texture") or obj:IsA("Decal") then
-				obj.Transparency = 0.7
-			end
-		end
-	elseif mode == "superBatata" then
-		Lighting.GlobalShadows = false
-		Lighting.Brightness = 0.4
-		Lighting.FogEnd = 150000
-		Lighting.OutdoorAmbient = Color3.fromRGB(40, 40, 40)
-		Lighting.Ambient = Color3.fromRGB(35, 35, 35)
-	elseif mode == "semSombras" then
-		Lighting.GlobalShadows = false
-		Lighting.Brightness = 1
-		Lighting.OutdoorAmbient = Color3.fromRGB(100, 100, 100)
-		Lighting.Ambient = Color3.fromRGB(100, 100, 100)
-	end
+local function aplicarGraficoSuperBatata()
+    aplicarGraficoBatata()
+    Lighting.Brightness = 0.5
+    Lighting.FogEnd = 200
 end
 
--- Cria botão
-local function createButton(text, y, mode)
-	local btn = Instance.new("TextButton", frame)
-	btn.Size = UDim2.new(1, -20, 0, 40)
-	btn.Position = UDim2.new(0, 10, 0, y)
-	btn.Text = text
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 16
-	btn.TextColor3 = Color3.fromRGB(0, 255, 0)
-	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btn.MouseButton1Click:Connect(function()
-		setGraphics(mode)
-	end)
-	local corner = Instance.new("UICorner", btn)
-	corner.CornerRadius = UDim.new(0, 8)
+local function aplicarGraficoAlto()
+    Lighting.Brightness = 2
+    Lighting.GlobalShadows = true
+    Lighting.FogEnd = 1000
+    Lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
+    Lighting.EnvironmentDiffuseScale = 0.5
+    Lighting.EnvironmentSpecularScale = 0.5
 end
 
--- Botões
-createButton("🔦 Super Realista", 50, "superRealista")
-createButton("🔥 Alto", 100, "alto")
-createButton("💡 Médio", 150, "medio")
-createButton("🥔 Batata", 200, "batata")
-createButton("👁 Textura Batata", 250, "batataTextura")
-createButton("🪸 Super Batata", 300, "superBatata")
-createButton("🚫 Sem Sombras", 350, "semSombras")
-createButton("⚡ Raytracing", 400, "raytracing")
+local function aplicarGraficoRealista()
+    Lighting.Brightness = 1.2
+    Lighting.GlobalShadows = true
+    Lighting.FogEnd = 999999
+    Lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
+    Lighting.EnvironmentDiffuseScale = 1
+    Lighting.EnvironmentSpecularScale = 1
+    local bloom = Instance.new("BloomEffect", Lighting)
+    bloom.Intensity = 0.3
+    bloom.Size = 32
+    local color = Instance.new("ColorCorrectionEffect", Lighting)
+    color.Brightness = 0.05
+    color.Contrast = 0.15
+    color.Saturation = 0.15
+end
+
+local function aplicarRayTracing()
+    Lighting.Brightness = 1.0
+    Lighting.GlobalShadows = true
+    Lighting.FogEnd = 999999
+    Lighting.EnvironmentDiffuseScale = 1
+    Lighting.EnvironmentSpecularScale = 2
+    local cc = Instance.new("ColorCorrectionEffect", Lighting)
+    cc.Brightness = 0.03
+    cc.Contrast = 0.2
+    cc.Saturation = 0.1
+    local blur = Instance.new("BlurEffect", Lighting)
+    blur.Size = 2
+end
+
+local function ajustarResolucao(escala)
+    if UserSettings then
+        local settings = UserSettings():GetService("UserGameSettings")
+        settings.SavedQualityLevel = escala
+    end
+end
+
+-- Cria botões (exemplo: Batata)
+local function criarBotao(nome, funcao, ordem)
+    local btn = Instance.new("TextButton", frame)
+    btn.Size = UDim2.new(1, -20, 0, 35)
+    btn.Position = UDim2.new(0, 10, 0, 50 + (ordem * 40))
+    btn.Text = nome
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.MouseButton1Click:Connect(funcao)
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(0, 8)
+end
+
+-- Adicionar os botões de opções de gráfico
+criarBotao("Gráficos Super Batata", aplicarGraficoSuperBatata, 0)
+criarBotao("Gráficos Batata", aplicarGraficoBatata, 1)
+criarBotao("Gráficos Alto", aplicarGraficoAlto, 2)
+criarBotao("Gráficos Realista", aplicarGraficoRealista, 3)
+criarBotao("Raytracing Simulado", aplicarRayTracing, 4)
+criarBotao("Resolução Alta", function() ajustarResolucao(10) end, 5)
+criarBotao("Resolução Baixa", function() ajustarResolucao(1) end, 6)
+
+-- Final
+print("[NeozxGraphicsMenu] Menu de gráficos carregado com sucesso!")
